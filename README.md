@@ -100,32 +100,29 @@ docker push yourDockerHubName/imageName:version
 
 Example: `docker push myDockerID/myservice:1`
 
-** -> Result:** https://hub.docker.com/repository/docker/aaidoudi/myservice/general
+---> **Result:** https://hub.docker.com/repository/docker/aaidoudi/myservice/general
 
 ## Create a kubernetes deployment from a Docker image
 
 ```
 kubectl get nodes
 ```
-** -> Result:** 
+---> **Result:**
 ```
 NAME       STATUS   ROLES           AGE    VERSION
 minikube   Ready    control-plane   147m   v1.35.1
 ```
 
+*(updated command:)*
 ```
-kubectl create deployment myservice --image=efrei/myservice:1
+kubectl create deployment myservice --image=aaidoudi/myservice:v1
 ```
-
-The image used comes from the Docker hub: https://hub.docker.com/r/efrei/myservice/tags
-
-But you can use your own image instead.
 
 Check the pod:
 ```
 kubectl get pods
 ```
-** -> Result:** 
+---> **Result:** 
 ```
 NAME                         READY   STATUS              RESTARTS   AGE
 myservice-84bf947c68-g9xtt   0/1     ContainerCreating   0          5s
@@ -137,8 +134,9 @@ Get complete logs for a pods:
 ```
 kubectl describe pods
 ```
-The command above displays a detailed and structured report of each pod's status, including recent events, container lifecycles, and potential errors such as volume mount failures. It exposes information invisible via a simple get command, such as the exact reasons for a crash or resource limits reached.
-** -> Result (excerpt):** 
+*The command above displays a detailed and structured report of each pod's status, including recent events, container lifecycles, and potential errors such as volume mount failures. It exposes information invisible via a simple get command, such as the exact reasons for a crash or resource limits reached.*
+
+---> **Result:** 
 ```
 Name:             myservice-84bf947c68-g9xtt
 Namespace:        default
@@ -170,13 +168,13 @@ where podname is the name of the pods obtained with:
 ```
 kubectl get pods
 ```
-** -> Result:** *kubectl exec -it myservice-84bf947c68-g9xtt -- /bin/bash*
+---> **Result:** *kubectl exec -it myservice-84bf947c68-g9xtt -- /bin/bash*
 
 List the containt of the container with:
 ```
 ls
 ```
-** -> Result:** 
+---> **Result:**
 ```
 app.jar
 ```
@@ -216,6 +214,10 @@ Retrieve the service address:
 ```
 minikube service myservice --url
 ```
+---> **Result:**
+```
+http://127.0.0.1:58592
+```
 
 This format of this address is `NodeIP:NodePort`.
 
@@ -230,11 +232,21 @@ Check if the myservice deployment is running:
 ```
 kubectl get deployments
 ```
+---> **Result:**
+```
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+myservice   1/1     1            1           50m
+```
 
 How many instance are actually running:
 
 ```
 kubectl get pods
+```
+---> **Result:** 
+```
+NAME                         READY   STATUS    RESTARTS   AGE
+myservice-84bf947c68-g9xtt   1/1     Running   0          50m
 ```
 
 Start a second instance:
@@ -245,13 +257,23 @@ kubectl scale --replicas=2 deployment/myservice
 ```
 kubectl get deployments
 ```
+---> **Result:** 
+```
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+myservice   2/2     2            2           55m
+```
 
 and 
 
 ```
 kubectl get pods
 ```
-
+---> **Result:** 
+```
+NAME                         READY   STATUS    RESTARTS       AGE
+myservice-84bf947c68-g9xtt   1/1     Running   1 (155m ago)   168m
+myservice-84bf947c68-kcdgt   1/1     Running   1 (155m ago)   159m
+```
 again
 
 ## Creating a Service of type LoadBalancer
@@ -277,7 +299,10 @@ kubectl expose deployment myservice --type=LoadBalancer --port=8080
 ```
 minikube service myservice --url
 ```
-Test in your web browser
+---> **Result:** It works and prints "Hello - TP2, 18 Feb 2026" at the adress
+```
+http://127.0.0.1:58658
+```
 
 ## Rolling updates
 
