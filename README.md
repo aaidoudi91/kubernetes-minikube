@@ -100,11 +100,19 @@ docker push yourDockerHubName/imageName:version
 
 Example: `docker push myDockerID/myservice:1`
 
+** -> Result:** https://hub.docker.com/repository/docker/aaidoudi/myservice/general
+
 ## Create a kubernetes deployment from a Docker image
 
 ```
 kubectl get nodes
 ```
+** -> Result:** 
+```
+NAME       STATUS   ROLES           AGE    VERSION
+minikube   Ready    control-plane   147m   v1.35.1
+```
+
 ```
 kubectl create deployment myservice --image=efrei/myservice:1
 ```
@@ -117,6 +125,11 @@ Check the pod:
 ```
 kubectl get pods
 ```
+** -> Result:** 
+```
+NAME                         READY   STATUS              RESTARTS   AGE
+myservice-84bf947c68-g9xtt   0/1     ContainerCreating   0          5s
+```
 
 Check if the state is running.
 
@@ -124,6 +137,24 @@ Get complete logs for a pods:
 ```
 kubectl describe pods
 ```
+The command above displays a detailed and structured report of each pod's status, including recent events, container lifecycles, and potential errors such as volume mount failures. It exposes information invisible via a simple get command, such as the exact reasons for a crash or resource limits reached.
+** -> Result (excerpt):** 
+```
+Name:             myservice-84bf947c68-g9xtt
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Wed, 25 Feb 2026 14:31:41 +0100
+...
+Containers:
+  myservice:
+    Container ID:   docker://9e19341188dcc15050775a43003a50c4b7f766f26a4c0330b7be645297590dc2
+    Image:          aaidoudi/myservice:v1
+    Image ID:       docker-pullable://aaidoudi/myservice@sha256:0a7ee1ff03a3a074e4a7e5a1cb6db16239d7e081014733beac806e6524196567
+```
+
+
 
 Retreive the IP address but notice that this IP address is ephemeral since a pods can be deleted and replaced by a new one.
 
@@ -139,10 +170,15 @@ where podname is the name of the pods obtained with:
 ```
 kubectl get pods
 ```
+** -> Result:** *kubectl exec -it myservice-84bf947c68-g9xtt -- /bin/bash*
 
 List the containt of the container with:
 ```
 ls
+```
+** -> Result:** 
+```
+app.jar
 ```
 
 Don't forget to exit the container with:
