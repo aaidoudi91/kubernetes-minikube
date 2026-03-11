@@ -309,18 +309,20 @@ http://127.0.0.1:58658
 Rolling updates allow Deployments' update to take place with zero downtime by incrementally updating Pods instances with new ones.
 
 To update the image of the application to version 2, use the set image subcommand, followed by the deployment name and the new image version:
+*(updated command:)*
 ```
-kubectl set image deployments/my-deployment my-deployment=dockerHudId/my-image:v2
+kubectl set image deployments/myservice myservice=aaidoudi/myservice:v2
 ```
+---> **Result:** image updated
 
 You can also confirm the update by running the rollout status subcommand:
 ```
-kubectl rollout status deployments/my-deployment
+kubectl rollout status deployments/myservice
 ```
 
 To roll back the deployment to your last working version, use the rollout undo subcommand:
 ```
-kubectl rollout undo deployments/my-deployment
+kubectl rollout undo deployments/myservice
 ```
 
 ## Create a deployment and a service using a yaml file
@@ -337,11 +339,13 @@ Apply the deployment:
 ```
 kubectl apply -f myservice-deployment.yml
 ```
+---> **Result:** deployment.apps/myservice created
 
 Apply the node port service: 
 ```
 kubectl apply -f myservice-service.yml
 ```
+---> **Result:** service/myservice created
 
 or 
 
@@ -370,9 +374,15 @@ Verify that the NGINX Ingress controller is running:
 ```
 kubectl get pods -n ingress-nginx
 ```
+---> **Result:** ingress-nginx-controller pod with a STATUS of "Running"
 
 Create a Deployment and expose it as a NodePort (not a loadbalancer).
 
+*(updated command:)*
+```
+kubectl create deployment myservice --image=aaidoudi/myservice:v1
+kubectl expose deployment myservice --type=NodePort --port=8080
+```
 Check if it works.
 
 A yaml file for ingress: https://github.com/charroux/kubernetes-minikube/blob/main/ingress.yml
@@ -380,6 +390,7 @@ A yaml file for ingress: https://github.com/charroux/kubernetes-minikube/blob/ma
 ```
 kubectl apply -f ingress.yml
 ```
+---> **Result:** ingress.networking.k8s.io/example-ingress created
 
 Retrieve the IP address of Ingress: 
 
@@ -436,7 +447,9 @@ Create a second deployment and its service, then add a new route to the ingress.
 ```
 kubectl delete services myservice
 ```
+---> **Result:** service "myservice" deleted
 ```
 kubectl delete deployment myservice
 ```
+---> **Result:** deployment.apps "myservice" deleted
 
